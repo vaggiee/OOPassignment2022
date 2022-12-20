@@ -35,12 +35,12 @@ void map::set_map(int x, int y,avatar player,monsters** arrayW, monsters** array
 	for(int t=3;t<5;t++)
 	{
 		for (int i = 0; i < N; i++) {
+			entity* object= new entity(t);
 			while(1) {
 				int k = rand() % x;
 				int j = rand() % y;
 				if(map1[k][j]==NULL) {
-					entity object(t);
-					map1[k][j] =&object;
+					map1[k][j] =object;
 					break;
 				}
 			}
@@ -91,55 +91,47 @@ int entity::get_type() {
 avatar::avatar(int in_type, char in_team):entity(in_type) {
 	team = in_team;
 }
-
+//Move monsters
 void map::move(monsters** arrayW, monsters** arrayV,int N) {
-	
-	int cnt = 0;
-	int cnt2 = 1;
 	for (int i = 0; i < N; i++) {
 		int t = rand() % 4;
-		while (cnt2){
-			switch (t) {
-				case 0:
-					if ( (arrayW[i]->x - 1)>0 &&
-						map1[arrayW[i]->x - 1][arrayW[i]->y] == NULL) {
-						cnt2 = 0;
-						map1[arrayW[i]->x][arrayW[i]->y] = NULL;
-						arrayW[i]->x = arrayW[i]->x - 1;
-						map1[arrayW[i]->x - 1][arrayW[i]->y] = arrayW[i];
-						break;
-					}
-				case 1:
-					if ( (arrayW[i]->y - 1) > 0 &&
-						map1[arrayW[i]->x][arrayW[i]->y - 1] == NULL) {
-						cnt2 = 0;
-						map1[arrayW[i]->x][arrayW[i]->y] = NULL;
-						arrayW[i]->y = arrayW[i]->y - 1;
-						map1[arrayW[i]->x][arrayW[i]->y - 1] = arrayW[i];
-						break;
-					}
-				case 2:
-					if ( (arrayW[i]->x + 1) ==N &&
-						map1[arrayW[i]->x + 1][arrayW[i]->y] == NULL) {
-						cnt2 = 0;
-						map1[arrayW[i]->x][arrayW[i]->y] = NULL;
-						arrayW[i]->x = arrayW[i]->x + 1;
-						map1[arrayW[i]->x + 1][arrayW[i]->y] = arrayW[i];
-						break;
-					}
-				case 3:
-					cnt += 1;
-					if (cnt > 1) break;
-					if ( (arrayW[i]->y + 1) == N &&
-						map1[arrayW[i]->x][arrayW[i]->y + 1] == NULL) {
-						cnt2 = 0;
-						map1[arrayW[i]->x][arrayW[i]->y] = NULL;
-						arrayW[i]->y = arrayW[i]->y + 1;
-						map1[arrayW[i]->x][arrayW[i]->y + 1] = arrayW[i];
-						break;
-					}
+		switch (t) {
+		case 0:
+			if ((arrayW[i]->x - 1) > 0 &&
+				map1[arrayW[i]->x - 1][arrayW[i]->y] == NULL) {
+				map1[arrayW[i]->x][arrayW[i]->y] = NULL;
+				arrayW[i]->x = arrayW[i]->x - 1;
+				map1[arrayW[i]->x][arrayW[i]->y] = arrayW[i];
+				break;
 			}
+		case 1:
+			if ((arrayW[i]->y - 1) > 0 &&
+				map1[arrayW[i]->x][arrayW[i]->y - 1] == NULL) {
+				map1[arrayW[i]->x][arrayW[i]->y] = NULL;
+				arrayW[i]->y = arrayW[i]->y - 1;
+				map1[arrayW[i]->x][arrayW[i]->y] = arrayW[i];
+				break;
+			}
+		case 2:
+			if ((arrayW[i]->x + 1) != N &&
+				map1[arrayW[i]->x + 1][arrayW[i]->y] == NULL) {
+				map1[arrayW[i]->x][arrayW[i]->y] = NULL;
+				arrayW[i]->x = arrayW[i]->x + 1;
+				map1[arrayW[i]->x][arrayW[i]->y] = arrayW[i];
+				break;
+			}
+		case 3:
+			if ((arrayW[i]->y + 1) != N &&
+				map1[arrayW[i]->x][arrayW[i]->y + 1] == NULL) {
+				map1[arrayW[i]->x][arrayW[i]->y] = NULL;
+				arrayW[i]->y = arrayW[i]->y + 1;
+				map1[arrayW[i]->x][arrayW[i]->y] = arrayW[i];
+				break;
+			}
+		default:
+			break;
 		}
+
 	}
 }
 /*
