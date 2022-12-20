@@ -19,7 +19,6 @@ class avatar : public entity {
 public:
 	avatar(int in_type, char in_team);
 	friend void set_team(char ch, avatar av);
-	/*void move(int in_type);*/
 protected:
 	char team;
 };  
@@ -40,8 +39,8 @@ class map {
 public:
 	void create_map(int x, int y);
 	void set_map(int x, int y, avatar player, monsters** arrayW, monsters** arrayV,int N);
-	void move(monsters** arrayW, monsters** arrayV, int N);
-	void printmap(int N);
+	void move(monsters** arrayW, monsters** arrayV,int x,int y, int N);
+	void printmap(int x,int y);
 private:
 	entity*** map1;
 };
