@@ -92,151 +92,154 @@ avatar::avatar(int in_type, char in_team):entity(in_type) {
 	team = in_team;
 }
 //Move monsters
-void map::move(monsters** arrayW, monsters** arrayV,int N) {
-	
-	//Move werewolves
-	for (int i = 0; i < N; i++) {
-		int t = rand() % 4;
-		switch (t) {
-		case 0:
-			if ((arrayW[i]->x - 1) > 0 &&
-				map1[arrayW[i]->x - 1][arrayW[i]->y] == NULL) {
-				map1[arrayW[i]->x][arrayW[i]->y] = NULL;
-				arrayW[i]->x = arrayW[i]->x - 1;
-				map1[arrayW[i]->x][arrayW[i]->y] = arrayW[i];
-				break;
-			}
-		case 1:
-			if ((arrayW[i]->y - 1) > 0 &&
-				map1[arrayW[i]->x][arrayW[i]->y - 1] == NULL) {
-				map1[arrayW[i]->x][arrayW[i]->y] = NULL;
-				arrayW[i]->y = arrayW[i]->y - 1;
-				map1[arrayW[i]->x][arrayW[i]->y] = arrayW[i];
-				break;
-			}
-		case 2:
-			if ((arrayW[i]->x + 1) != N &&
-				map1[arrayW[i]->x + 1][arrayW[i]->y] == NULL) {
-				map1[arrayW[i]->x][arrayW[i]->y] = NULL;
-				arrayW[i]->x = arrayW[i]->x + 1;
-				map1[arrayW[i]->x][arrayW[i]->y] = arrayW[i];
-				break;
-			}
-		case 3:
-			if ((arrayW[i]->y + 1) != N &&
-				map1[arrayW[i]->x][arrayW[i]->y + 1] == NULL) {
-				map1[arrayW[i]->x][arrayW[i]->y] = NULL;
-				arrayW[i]->y = arrayW[i]->y + 1;
-				map1[arrayW[i]->x][arrayW[i]->y] = arrayW[i];
-				break;
-			}
-		default:
+void map::move(monsters** arrayW, monsters** arrayV, int x, int y,int N) {
+
+//Move werewolves
+for (int i = 0; i < N; i++) {
+	int t = rand() % 4;
+	switch (t) {
+	case 0:
+		if ((arrayW[i]->x - 1) > 0 &&
+			map1[arrayW[i]->x - 1][arrayW[i]->y] == NULL) {
+
+			map1[arrayW[i]->x][arrayW[i]->y] = NULL;
+			arrayW[i]->x = arrayW[i]->x - 1;
+			map1[arrayW[i]->x][arrayW[i]->y] = arrayW[i];
 			break;
 		}
+	case 1:
+		if ((arrayW[i]->y - 1) > 0 &&
+			map1[arrayW[i]->x][arrayW[i]->y - 1] == NULL) {
 
-	}
-	//Move vampires
-	for (int i = 0; i < N; i++) {
-		int t = rand() % 8;
-		switch (t) {
-		case 0:
-			if ((arrayV[i]->x - 1) > 0 &&
-				map1[arrayV[i]->x - 1][arrayV[i]->y] == NULL) {
-
-				map1[arrayV[i]->x][arrayV[i]->y] = NULL;
-				arrayV[i]->x = arrayV[i]->x - 1;
-
-				map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
-				break;
-			}
-		case 1:
-			if ((arrayV[i]->y - 1) > 0 &&
-				map1[arrayV[i]->x][arrayV[i]->y - 1] == NULL) {
-
-				map1[arrayV[i]->x][arrayV[i]->y] = NULL;
-				arrayV[i]->y = arrayV[i]->y - 1;
-
-				map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
-				break;
-			}
-		case 2:
-			if ((arrayV[i]->x + 1) != N &&
-				map1[arrayV[i]->x + 1][arrayV[i]->y] == NULL) {
-
-				map1[arrayV[i]->x][arrayV[i]->y] = NULL;
-				arrayV[i]->x = arrayV[i]->x + 1;
-
-				map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
-				break;
-			}
-		case 3:
-			if ((arrayV[i]->y + 1) != N &&
-				map1[arrayV[i]->x][arrayV[i]->y + 1] == NULL) {
-
-				map1[arrayV[i]->x][arrayV[i]->y] = NULL;
-				arrayV[i]->y = arrayV[i]->y + 1;
-
-				map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
-				break;
-			}
-		case 4:
-			if ((arrayV[i]->x - 1) > 0 && (arrayV[i]->y - 1) > 0 &&
-				map1[arrayV[i]->x - 1][arrayV[i]->y - 1] == NULL) {
-
-				map1[arrayV[i]->x][arrayV[i]->y] = NULL;
-				arrayV[i]->x = arrayV[i]->x - 1;
-				arrayV[i]->y = arrayV[i]->y - 1;
-
-				map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
-				break;
-			}
-		case 5:
-			if ((arrayV[i]->y - 1) > 0 && (arrayV[i]->x + 1) != N &&
-				map1[arrayV[i]->x+1][arrayV[i]->y - 1] == NULL) {
-
-				map1[arrayV[i]->x][arrayV[i]->y] = NULL;
-				arrayV[i]->y = arrayV[i]->y - 1;
-				arrayV[i]->x = arrayV[i]->x + 1;
-
-				map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
-				break;
-			}
-		case 6:
-			if ((arrayV[i]->x + 1) != N && (arrayV[i]->y + 1) != N &&
-				map1[arrayV[i]->x + 1][arrayV[i]->y+1] == NULL) {
-
-				map1[arrayV[i]->x][arrayV[i]->y] = NULL;
-				arrayV[i]->x = arrayV[i]->x + 1;
-				arrayV[i]->y = arrayV[i]->y + 1;
-
-				map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
-				break;
-			}
-		case 7:
-			if ((arrayV[i]->y + 1) != N && (arrayV[i]->x - 1) > 0 &&
-				map1[arrayV[i]->x][arrayV[i]->y + 1] == NULL) {
-
-				map1[arrayV[i]->x][arrayV[i]->y] = NULL;
-				arrayV[i]->y = arrayV[i]->y + 1;
-				arrayV[i]->x = arrayV[i]->x - 1;
-
-				map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
-				break;
-			}
-		default:
+			map1[arrayW[i]->x][arrayW[i]->y] = NULL;
+			arrayW[i]->y = arrayW[i]->y - 1;
+			map1[arrayW[i]->x][arrayW[i]->y] = arrayW[i];
 			break;
 		}
+	case 2:
+		if ((arrayW[i]->x + 1) != x &&
+			map1[arrayW[i]->x + 1][arrayW[i]->y] == NULL) {
 
+			map1[arrayW[i]->x][arrayW[i]->y] = NULL;
+			arrayW[i]->x = arrayW[i]->x + 1;
+			map1[arrayW[i]->x][arrayW[i]->y] = arrayW[i];
+			break;
+		}
+	case 3:
+		if ((arrayW[i]->y + 1) != y &&
+			map1[arrayW[i]->x][arrayW[i]->y + 1] == NULL) {
+
+			map1[arrayW[i]->x][arrayW[i]->y] = NULL;
+			arrayW[i]->y = arrayW[i]->y + 1;
+			map1[arrayW[i]->x][arrayW[i]->y] = arrayW[i];
+			break;
+		}
+	default:
+		break;
 	}
+}
+//Move vampires
+for (int i = 0; i < N; i++) {
+	int t = rand() % 8;
+	switch (t) {
+	case 0:
+		if ((arrayV[i]->x - 1) > 0 &&
+			map1[arrayV[i]->x - 1][arrayV[i]->y] == NULL) {
+
+			map1[arrayV[i]->x][arrayV[i]->y] = NULL;
+			arrayV[i]->x = arrayV[i]->x - 1;
+
+			map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
+			break;
+		}
+	case 1:
+		if ((arrayV[i]->y - 1) > 0 &&
+			map1[arrayV[i]->x][arrayV[i]->y - 1] == NULL) {
+
+			map1[arrayV[i]->x][arrayV[i]->y] = NULL;
+			arrayV[i]->y = arrayV[i]->y - 1;
+
+			map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
+			break;
+		}
+	case 2:
+		if ((arrayV[i]->x + 1) != x &&
+			map1[arrayV[i]->x + 1][arrayV[i]->y] == NULL) {
+
+			map1[arrayV[i]->x][arrayV[i]->y] = NULL;
+			arrayV[i]->x = arrayV[i]->x + 1;
+
+			map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
+			break;
+		}
+	case 3:
+		if ((arrayV[i]->y + 1) != y &&
+			map1[arrayV[i]->x][arrayV[i]->y + 1] == NULL) {
+
+			map1[arrayV[i]->x][arrayV[i]->y] = NULL;
+			arrayV[i]->y = arrayV[i]->y + 1;
+
+			map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
+			break;
+		}
+	case 4:
+		if ((arrayV[i]->x - 1) > 0 && (arrayV[i]->y - 1) > 0 &&
+			map1[arrayV[i]->x - 1][arrayV[i]->y - 1] == NULL) {
+
+			map1[arrayV[i]->x][arrayV[i]->y] = NULL;
+			arrayV[i]->x = arrayV[i]->x - 1;
+			arrayV[i]->y = arrayV[i]->y - 1;
+
+			map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
+			break;
+		}
+	case 5:
+		if ((arrayV[i]->y - 1) > 0 && (arrayV[i]->x + 1) != x &&
+			map1[arrayV[i]->x+1][arrayV[i]->y - 1] == NULL) {
+
+			map1[arrayV[i]->x][arrayV[i]->y] = NULL;
+			arrayV[i]->y = arrayV[i]->y - 1;
+			arrayV[i]->x = arrayV[i]->x + 1;
+
+			map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
+			break;
+		}
+	case 6:
+		if ((arrayV[i]->x + 1) != x && (arrayV[i]->y + 1) != y &&
+			map1[arrayV[i]->x + 1][arrayV[i]->y+1] == NULL) {
+
+			map1[arrayV[i]->x][arrayV[i]->y] = NULL;
+			arrayV[i]->x = arrayV[i]->x + 1;
+			arrayV[i]->y = arrayV[i]->y + 1;
+
+			map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
+			break;
+		}
+	case 7:
+		if ((arrayV[i]->y + 1) != y && (arrayV[i]->x - 1) > 0 &&
+			map1[arrayV[i]->x][arrayV[i]->y + 1] == NULL) {
+
+			map1[arrayV[i]->x][arrayV[i]->y] = NULL;
+			arrayV[i]->y = arrayV[i]->y + 1;
+			arrayV[i]->x = arrayV[i]->x - 1;
+
+			map1[arrayV[i]->x][arrayV[i]->y] = arrayV[i];
+			break;
+		}
+	default:
+		break;
+	}
+
+}
 }
 /*
 void avatar::move(int in_type) {
 
 }*/
 
-void map::printmap(int N) {
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j< N; j++) {
+void map::printmap(int x,int y) {
+	for (int i = 0; i < x; i++) {
+		for (int j = 0; j< y; j++) {
 			if (map1[i][j] == NULL) cout << "   ";
 			else {
 				switch (map1[i][j]->get_type()) {
