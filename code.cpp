@@ -261,48 +261,74 @@ void map::move(monsters** arrayW, monsters** arrayV, int x, int y,int N) {
 	}
 }
 
-//Moves avatar
+int map::ret_coo1(int x, int y) {
+	int k = 0, l = 0;
+	for (int i = 0; i < x; i++) {
+		for (int j = 0; j < y; j++) {
+			if (map1[i][j] != NULL && map1[i][j]->get_type() == 0) {
+				return i;
+			}
+		}
+	}
+}
 
+int map::ret_coo2(int x, int y) {
+	int k = 0, l = 0;
+	for (int i = 0; i < x; i++) {
+		for (int j = 0; j < y; j++) {
+			if (map1[i][j] != NULL && map1[i][j]->get_type() == 0) {
+				return j;
+			}
+		}
+	}
+}
+
+//Moves avatar
 void map::move_av(avatar player,int x,int y,int num) {
-	
+	int k = ret_coo1(x, y);
+	int l = ret_coo2(x, y);
+
 	// Move the avatar based on the input
+	
 	if (num==0) // Up arrow key
 	{
-		if (player.x -1 > 0 && map1[player.x - 1][player.y] == NULL)
+		cout << k<<endl;
+		cout << l << endl;
+		if (k -1 > 0 && map1[k][l] == NULL)
 		{
-			map1[player.x][player.y] = NULL;
-			player.x--;
-			map1[player.x][player.y] = &player;
+			map1[k][l] = NULL;
+			k--;
+			map1[k][l] = &player;
 			return;
 		}
 	}
 	else if (num == 1) // Down arrow key
 	{
-		if (player.x + 1 < x && map1[player.x + 1][player.y] == NULL)
+		if (k + 1 < x && map1[k+1][l] == NULL)
 		{
-			map1[player.x][player.y] = NULL;
-			player.x++;
-			map1[player.x][player.y] = &player;
+			map1[k][l] = NULL;
+			k++;
+			map1[k][l] = &player;
 			return;
 		}
 	}
 	else if (num == 2) // Left arrow key
 	{
-		if (player.y -1 > 0 && map1[player.x][player.y - 1] == NULL)
+		if (l -1 > 0 && map1[k][l - 1] == NULL)
 		{
-			map1[player.x][player.y] = NULL;
-			player.y--;
-			map1[player.x][player.y] = &player;
+			map1[k][l] = NULL;
+			l--;
+			map1[k][l] = &player;
 			return;
 		}
 	}
 	else if (num == 3) // Right arrow key
 	{
-		if (player.y +1 > 0 && map1[player.x][player.y + 1] == NULL)
+		if (l +1 > 0 && map1[k][l + 1] == NULL)
 		{
-			map1[player.x][player.y] = NULL;
-			player.y++;
-			map1[player.x][player.y] = &player;
+			map1[k][l] = NULL;
+			l++;
+			map1[k][l] = &player;
 			return;
 		}
 	}
