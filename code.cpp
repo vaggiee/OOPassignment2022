@@ -3,7 +3,7 @@
 #include <conio.h>
 #include "Header.h"
 #pragma once
-
+using namespace std;
 //Entity constructor
 entity::entity(int in_type) {
 	type = in_type;
@@ -18,9 +18,9 @@ int entity::get_type() {
 
 //Monsters constructor
 monsters::monsters(int in_type) :entity(in_type) {
-	dmg = 1 + rand() % 3;
-	health =5;
-	healing = rand() % 3;
+	dmg = 1 + rand() % 5;
+	health =3;
+	healing = rand() % 2;
 	shield = 1 + rand() % 2;
 }
 
@@ -55,6 +55,14 @@ void map::create_map(int x, int y) {
 			map1[i][j] = NULL;
 		}
 	}
+}
+
+//Frees the memory used by the map
+void map::deletemap(int x) {
+	for (int i = 0; i < x; i++) {
+		delete[] map1[i];
+	}
+	delete[] map1;
 }
 
 /*Place entities in the map*/
@@ -253,33 +261,98 @@ void map::move(monsters** arrayW, monsters** arrayV, int x, int y,int N) {
 	}
 }
 
+//Moves avatar
+
+void map::move_av(avatar player,int x,int y,int num) {
+	
+	// Move the avatar based on the input
+	if (num==0) // Up arrow key
+	{
+		if (player.x -1 > 0 && map1[player.x - 1][player.y] == NULL)
+		{
+			map1[player.x][player.y] = NULL;
+			player.x--;
+			map1[player.x][player.y] = &player;
+			return;
+		}
+	}
+	else if (num == 1) // Down arrow key
+	{
+		if (player.x + 1 < x && map1[player.x + 1][player.y] == NULL)
+		{
+			map1[player.x][player.y] = NULL;
+			player.x++;
+			map1[player.x][player.y] = &player;
+			return;
+		}
+	}
+	else if (num == 2) // Left arrow key
+	{
+		if (player.y -1 > 0 && map1[player.x][player.y - 1] == NULL)
+		{
+			map1[player.x][player.y] = NULL;
+			player.y--;
+			map1[player.x][player.y] = &player;
+			return;
+		}
+	}
+	else if (num == 3) // Right arrow key
+	{
+		if (player.y +1 > 0 && map1[player.x][player.y + 1] == NULL)
+		{
+			map1[player.x][player.y] = NULL;
+			player.y++;
+			map1[player.x][player.y] = &player;
+			return;
+		}
+	}
+	return;
+}
+
+
 //Prints map
 void map::printmap(int x, int y) {
+	int w=0, v=0;
+	for (int L = 0; L < y; L++) {
+		cout << "__";
+	}
+	cout << endl;
 	for (int i = 0; i < x; i++) {
 		for (int j = 0; j< y; j++) {
-			if (map1[i][j] == NULL) cout << "   ";
+			if (map1[i][j] == NULL) cout << "| ";
 			else {
 				switch (map1[i][j]->get_type()) {
 					case 0:
-						cout << "AVA";
+						cout << "|A";
 						break;
 					case 1:
-						cout << " W ";
+						cout << "|W";
+						w++;
 						break;
 					case 2:
-						cout << " V ";
+						cout << "|V";
+						v++;
 						break;
 					case 3:
-						cout << "WAT";
+						cout << "|S";
 						break;
 					case 4:
-						cout << "TRE";
+						cout << "|T";
+						break;
+					default:
+						cout << "|O";
 						break;
 				}
 			}
 		}
-		cout << endl;
+		cout << "|";
+		cout << endl;	
 	}
+	for (int L = 0; L < y; L++) {
+		cout << "--";
+	}
+	cout << endl<< "ta werewolve einai:" << w << endl;
+	cout << "ta vampire einai:" << v << endl;
 }
 
 //Takes a position on the map that contains an entity type 1 or 2 and gives back the monster
@@ -296,6 +369,28 @@ monsters* map::ret_monster(monsters** arrayW, monsters** arrayV, entity* monster
 			if (arrayV[j] == monster) return arrayV[j];
 		}
 	}
+	return NULL;
+}
+
+//Makes the pointer of mon NULL
+void nul_mon(monsters** arrayW, monsters** arrayV, monsters* mon, int N) {
+	if (mon->get_type() == 1) {
+		for (int j = 0; j < N; j++) {
+			if (arrayW[j] == mon) {
+				arrayW[j] = NULL;
+				return;
+			}
+		}
+	}
+	else if (mon->get_type() == 2) {
+		for (int i = 0; i < N; i++) {
+			if (arrayV[i] == mon) {
+				arrayV[i] = NULL;
+				return;
+			}
+		}
+	}
+	cout << "nullnotworking";
 }
 
 //both monsters choose if the want to heal one another
@@ -318,16 +413,19 @@ void map::heal(monsters* m1, monsters* m2) {
 
 }
 
-//attacker2 attacks if he can attacker1 AND CHECKS FOR WIN
-void map::attack(monsters* attacker1, monsters* attacker2,int N) {
+//attacker1 attacks if he can attacker2 AND CHECKS FOR WIN
+void map::attack(monsters** arrayW, monsters** arrayV, monsters* attacker1, monsters* attacker2,int N) {
 
-	if ( attacker2->dmg >= attacker1->dmg ) {
+	if ( attacker1->dmg >= attacker2->dmg ) {
 
-		if (attacker2->dmg > attacker1->shield) {
-			attacker1->health = attacker1->health - attacker2->dmg + attacker1->shield;
-			if (attacker1->health == 0) {
+		if (attacker1->dmg > attacker2->shield) {
+			attacker2->health -= attacker1->dmg+ attacker2->shield;
+			//for (int l = 0; l < N; l++) {
+			//	if (attacker2->get_type() == 1 && (arrayW[l]->health == attacker2->health)) system("pause");
+			//}
+			if (attacker2->health == 0) {
 				//Count dead Werewolves-Vampires
-				if (attacker1->get_type() == 1) {
+				if (attacker2->get_type() == 1) {
 					deadW++;
 					if (deadW == N) {
 						cout <<endl<< "VAMPIRES WON!!!";
@@ -341,8 +439,8 @@ void map::attack(monsters* attacker1, monsters* attacker2,int N) {
 						exit(0);
 					}
 				}
-				map1[attacker1->x][attacker1->y] = NULL;
-				attacker1 = NULL;
+				map1[attacker2->x][attacker2->y] = NULL;
+				nul_mon(arrayW, arrayV, attacker2,N);
 			}
 		}
 
@@ -357,50 +455,58 @@ void map::check_neigh(monsters** arrayW, monsters** arrayV, int x, int y,int N) 
 			if ( (arrayW[i]->x - 1) > 0 &&
 				map1[arrayW[i]->x - 1][arrayW[i]->y] != NULL) {
 				switch (map1[arrayW[i]->x-1][arrayW[i]->y]->get_type()) {
-				case 1:
-					heal(arrayW[i], ret_monster(arrayW,arrayV, map1[arrayW[i]->x - 1][arrayW[i]->y],N));
-					break;
-				case 2:
-					attack(arrayW[i], ret_monster(arrayW, arrayV, map1[arrayW[i]->x - 1][arrayW[i]->y], N),N);
-					break;
+					case 1:
+						heal(arrayW[i], ret_monster(arrayW,arrayV, map1[arrayW[i]->x - 1][arrayW[i]->y],N));
+						continue;
+					case 2:
+						attack(arrayW,arrayV, arrayW[i], ret_monster(arrayW, arrayV, map1[arrayW[i]->x - 1][arrayW[i]->y], N),N);
+						continue;
+					default:
+						break;
 				}
-				continue;
+				
 			}
 			if ((arrayW[i]->y + 1) !=y  &&
 				map1[arrayW[i]->x][arrayW[i]->y + 1] != NULL) {
 				switch (map1[arrayW[i]->x][arrayW[i]->y+1]->get_type()) {
-				case 1:
-					heal(arrayW[i], ret_monster(arrayW, arrayV, map1[arrayW[i]->x][arrayW[i]->y+1], N));
-					break;
-				case 2:
-					attack(arrayW[i], ret_monster(arrayW, arrayV, map1[arrayW[i]->x][arrayW[i]->y+1], N), N);
-					break;
+					case 1:
+						heal(arrayW[i], ret_monster(arrayW, arrayV, map1[arrayW[i]->x][arrayW[i]->y+1], N));
+						continue;
+					case 2:
+						attack(arrayW, arrayV, arrayW[i], ret_monster(arrayW, arrayV, map1[arrayW[i]->x][arrayW[i]->y+1], N), N);
+						continue;
+					default:
+						break;
 				}
-				continue;
+				
 			}
 			if ((arrayW[i]->x + 1) != x &&
 				map1[arrayW[i]->x + 1][arrayW[i]->y] != NULL) {
 				switch (map1[arrayW[i]->x + 1][arrayW[i]->y]->get_type()) {
 				case 1:
 					heal(arrayW[i], ret_monster(arrayW, arrayV, map1[arrayW[i]->x + 1][arrayW[i]->y], N));
-					break;
+					continue;
 				case 2:
-					attack(arrayW[i], ret_monster(arrayW, arrayV, map1[arrayW[i]->x + 1][arrayW[i]->y], N), N);
+					attack(arrayW, arrayV, arrayW[i], ret_monster(arrayW, arrayV, map1[arrayW[i]->x + 1][arrayW[i]->y], N), N);
+					continue;
+				default:
 					break;
 				}
-				continue;
+				
 			}
 			if ((arrayW[i]->y - 1) > 0 &&
 				map1[arrayW[i]->x][arrayW[i]->y - 1] != NULL) {
 				switch (map1[arrayW[i]->x][arrayW[i]->y - 1]->get_type()) {
 				case 1:
 					heal(arrayW[i], ret_monster(arrayW, arrayV, map1[arrayW[i]->x][arrayW[i]->y - 1], N));
-					break;
+					continue;
 				case 2:
-					attack(arrayW[i], ret_monster(arrayW, arrayV, map1[arrayW[i]->x][arrayW[i]->y - 1], N), N);
+					attack(arrayW, arrayV, arrayW[i], ret_monster(arrayW, arrayV, map1[arrayW[i]->x][arrayW[i]->y - 1], N), N);
+					continue;
+				default:
 					break;
 				}
-				continue;
+				
 			}
 		}
 	}
@@ -410,50 +516,58 @@ void map::check_neigh(monsters** arrayW, monsters** arrayV, int x, int y,int N) 
 			if ((arrayV[i]->x - 1) > 0 &&
 				map1[arrayV[i]->x - 1][arrayV[i]->y] != NULL) {
 				switch (map1[arrayV[i]->x - 1][arrayV[i]->y]->get_type()) {
-				case 1:
-					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x - 1][arrayV[i]->y], N));
-					break;
 				case 2:
-					attack(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x - 1][arrayV[i]->y], N), N);
+					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x - 1][arrayV[i]->y], N));
+					continue;
+				case 1:
+					attack(arrayW, arrayV, arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x - 1][arrayV[i]->y], N), N);
+					continue;
+				default:
 					break;
 				}
-				continue;
+				
 			}
 			if ((arrayV[i]->y + 1) != y &&
 				map1[arrayV[i]->x][arrayV[i]->y + 1] != NULL) {
 				switch (map1[arrayV[i]->x][arrayV[i]->y + 1]->get_type()) {
-				case 1:
-					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y + 1], N));
-					break;
 				case 2:
-					attack(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y + 1], N), N);
+					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y + 1], N));
+					continue;
+				case 1:
+					attack(arrayW, arrayV, arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y + 1], N), N);
+					continue;
+				default:
 					break;
 				}
-				continue;
+				
 			}
 			if ((arrayV[i]->x + 1) != x &&
 				map1[arrayV[i]->x + 1][arrayV[i]->y] != NULL) {
 				switch (map1[arrayV[i]->x + 1][arrayV[i]->y]->get_type()) {
-				case 1:
-					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x + 1][arrayV[i]->y], N));
-					break;
 				case 2:
-					attack(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x + 1][arrayV[i]->y], N), N);
+					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x + 1][arrayV[i]->y], N));
+					continue;
+				case 1:
+					attack(arrayW, arrayV, arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x + 1][arrayV[i]->y], N), N);
+					continue;
+				default:
 					break;
 				}
-				continue;
+				
 			}
 			if ((arrayV[i]->y - 1) > 0 &&
 				map1[arrayV[i]->x][arrayV[i]->y - 1] != NULL) {
 				switch (map1[arrayV[i]->x][arrayV[i]->y - 1]->get_type()) {
-				case 1:
-					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y - 1], N));
-					break;
 				case 2:
-					attack(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y - 1], N), N);
+					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y - 1], N));
+					continue;
+				case 1:
+					attack(arrayW, arrayV, arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y - 1], N), N);
+					continue;
+				default:
 					break;
 				}
-				continue;
+				
 			}
 		}
 	}
