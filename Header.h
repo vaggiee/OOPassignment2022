@@ -8,6 +8,8 @@ public:
 	entity(int in_type);
 	int get_type();
 	friend class map;
+	friend class monsters;
+	friend class avatar;
 private:
 	int x;
 	int y;
@@ -37,17 +39,20 @@ private:
 
 class map {
 public:
+	void deletemap(int x);
 	void create_map(int x, int y);
 	void set_map(int x, int y, avatar player, monsters** arrayW, monsters** arrayV,int N);
 	void move(monsters** arrayW, monsters** arrayV, int x, int y, int N);
 	void check_neigh(monsters** arrayW, monsters** arrayV, int x, int y,int N);
 	monsters* ret_monster(monsters** arrayW, monsters** arrayV, entity* monster, int N);
 	void heal(monsters* m1, monsters* m2);
-	void attack(monsters* attacker1, monsters* attacker2, int N);
-//	void move_av(int in_type,avatar player);
+	void attack(monsters** arrayW, monsters** arrayV, monsters* attacker1, monsters* attacker2, int N);
+	void move_av(avatar player, int x, int y, int num);
 	void printmap(int x, int y);
 	int get_deadW();
 	int get_deadV();
+	friend void nul_mon(monsters** arrayW, monsters** arrayV, monsters* mon,int N);
+	friend class entity;
 private:
 	entity*** map1;
 	int deadW = 0;
