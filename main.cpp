@@ -7,6 +7,19 @@
 
 using namespace std;
 
+WORD getKey() {
+	HANDLE hin = GetStdHandle(STD_INPUT_HANDLE);
+	INPUT_RECORD inrec;
+	DWORD n;
+	while (ReadConsoleInput(hin, &inrec, 1, &n) && n)
+		if (inrec.EventType == KEY_EVENT && inrec.Event.KeyEvent.bKeyDown)
+			return inrec.Event.KeyEvent.wVirtualKeyCode;
+	cerr << "getKey failed\n";
+	exit(EXIT_FAILURE);
+	return 0;
+}
+
+
 int main() {
 	int x, y;
 	char tteam;
@@ -40,27 +53,19 @@ int main() {
 		map1->printmap(x,y);
 
 		map1->check_neigh(arrayW, arrayV, x, y, N);
-
-		if (_kbhit())
-		{
-			if ((_getch() == 'p' || _getch() == 'P')) {
-				cout << "To paixnidi brhsketai se paush" << endl;
-				cout << "Ta nekra vampire einai:" << map1->get_deadV() << endl;
-				cout << "Ta nekra werewolve einai:" << map1->get_deadW() << endl;
-				system("pause");
-			}
-			if (_getch() == 72) {
-				map1->move_av(*mya, x, y, 0);
-			}
-			if (_getch() == 80) {
-				map1->move_av(*mya, x, y, 1);
-			}
-			if (_getch() == 75) {
-				map1->move_av(*mya, x, y, 2);
-			}
-			if (_getch() == 77) {
-				map1->move_av(*mya, x, y, 3);
-			}
+		switch (getKey()) {
+		case VK_LEFT:
+			map1->move_av(*mya, x, y, 2);
+			break;
+		case VK_RIGHT:
+			map1->move_av(*mya, x, y, 3);
+			break;
+		case VK_UP:
+			map1->move_av(*mya, x, y, 0);
+			break;
+		case VK_DOWN:
+			map1->move_av(*mya, x, y, 1);
+			break;
 		}
 		map1->move(arrayW, arrayV,x,y, N);
 		Sleep(400);
