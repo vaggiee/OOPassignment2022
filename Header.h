@@ -48,6 +48,8 @@ public:
 	void heal(monsters* m1, monsters* m2);
 	void attack(monsters** arrayW, monsters** arrayV, monsters* attacker1, monsters* attacker2, int N);
 	void move_av(avatar player, int x, int y, int num);
+	int ret_coo1(int x, int y);
+	int ret_coo2(int x, int y);
 	void printmap(int x, int y);
 	int get_deadW();
 	int get_deadV();
