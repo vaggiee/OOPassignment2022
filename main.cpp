@@ -25,11 +25,19 @@ int main() {
 	char tteam;
 	srand(time(0));
 	
-	cout << "To WvV jekinhse! Gia na kaneis pause pata P kai to esc gia na termatisei to paixnidi"<<endl;
-	cout << "Dwse diastaseis tou xarth" << endl;
+	cout << " WvV has started !"<<endl<< "Press SPACE to pause and ESC to end the game!"<<endl;
+	cout << "Give map dimensions" << endl;
 	cin >> x >> y;
-	cout << "Dialeje omada W gia werewolves,V gia vampires" << endl;
+	cout << "Choose a team: W or w for werewolves and V or v for vampires"<<endl<<"By pressing left shift you can heal your team!" << endl;
 	cin >> tteam;
+	while (true) {
+		if (tteam != 'W' || tteam != 'w' || tteam != 'V' || tteam != 'v') {
+			cout << "Wrong input...";
+			cout << "Choose a team: W or w for werewolves and V or v for vampires" << endl;
+			cin >> tteam;
+			break;
+		}
+	}
 	int N = (x * y) / 15;
 	monsters** arrayW = new monsters* [N];
 	monsters** arrayV = new monsters * [N];
