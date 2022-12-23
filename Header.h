@@ -19,15 +19,20 @@ private:
 class avatar : public entity {
 public:
 	avatar(int in_type, char in_team);
+	char get_team();
+	int get_potion();
+	void decreasepot();
 	friend void set_team(char ch, avatar av);
 protected:
 	char team;
+	int potion;
 };  
 
 
 class monsters : public entity {
 public:
 	monsters(int in_type);
+	void avatarheal();
 	friend class map;
 private:
 	int dmg;
