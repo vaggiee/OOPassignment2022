@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstdlib>
-#include <conio.h>
+#include <Windows.h>
 #include "Header.h"
 #pragma once
 using namespace std;
@@ -24,14 +24,33 @@ monsters::monsters(int in_type) :entity(in_type) {
 	shield = 1 + rand() % 2;
 }
 
+//Maximize monsters health
+void monsters::avatarheal() {
+	health = 3;
+}
+
 //Avatar constructor
 avatar::avatar(int in_type, char in_team) :entity(in_type) {
 	team = in_team;
+	potion = 1;
+}
+
+//Avatar accessors
+char avatar::get_team() {
+	return team;
+}
+int avatar::get_potion() {
+	return potion;
 }
 
 //Sets avatars team
 void set_team(char ch, avatar av) {
 	av.team = ch;
+}
+
+//Decreases potions by 1
+void avatar::decreasepot() {
+	potion -= 1;
 }
 
 //Map accessors
@@ -72,6 +91,8 @@ void map::set_map(int x, int y,avatar player,monsters** arrayW, monsters** array
 	map1[i][j] = &player;
 	player.x = i;
 	player.y = j;
+
+
 
 /*Place objects*/
 	for(int t=3;t<5;t++)
@@ -124,7 +145,7 @@ void map::move(monsters** arrayW, monsters** arrayV, int x, int y,int N) {
 			int t = rand() % 4;
 			switch (t) {
 			case 0:
-				if ((arrayW[i]->x - 1) > 0 &&
+				if (arrayW[i]->x  > 0 &&
 					map1[arrayW[i]->x - 1][arrayW[i]->y] == NULL) {
 
 					map1[arrayW[i]->x][arrayW[i]->y] = NULL;
@@ -133,7 +154,7 @@ void map::move(monsters** arrayW, monsters** arrayV, int x, int y,int N) {
 					break;
 				}
 			case 1:
-				if ((arrayW[i]->y - 1) > 0 &&
+				if (arrayW[i]->y > 0 &&
 					map1[arrayW[i]->x][arrayW[i]->y - 1] == NULL) {
 
 					map1[arrayW[i]->x][arrayW[i]->y] = NULL;
@@ -171,7 +192,7 @@ void map::move(monsters** arrayW, monsters** arrayV, int x, int y,int N) {
 			int t = rand() % 8;
 			switch (t) {
 			case 0:
-				if ((arrayV[i]->x - 1) > 0 &&
+				if (arrayV[i]->x > 0 &&
 					map1[arrayV[i]->x - 1][arrayV[i]->y] == NULL) {
 
 					map1[arrayV[i]->x][arrayV[i]->y] = NULL;
@@ -181,7 +202,7 @@ void map::move(monsters** arrayW, monsters** arrayV, int x, int y,int N) {
 					break;
 				}
 			case 1:
-				if ((arrayV[i]->y - 1) > 0 &&
+				if (arrayV[i]->y > 0 &&
 					map1[arrayV[i]->x][arrayV[i]->y - 1] == NULL) {
 
 					map1[arrayV[i]->x][arrayV[i]->y] = NULL;
@@ -211,7 +232,7 @@ void map::move(monsters** arrayW, monsters** arrayV, int x, int y,int N) {
 					break;
 				}
 			case 4:
-				if ((arrayV[i]->x - 1) > 0 && (arrayV[i]->y - 1) > 0 &&
+				if (arrayV[i]->x > 0 && arrayV[i]->y > 0 &&
 					map1[arrayV[i]->x - 1][arrayV[i]->y - 1] == NULL) {
 
 					map1[arrayV[i]->x][arrayV[i]->y] = NULL;
@@ -222,7 +243,7 @@ void map::move(monsters** arrayW, monsters** arrayV, int x, int y,int N) {
 					break;
 				}
 			case 5:
-				if ((arrayV[i]->y - 1) > 0 && (arrayV[i]->x + 1) != x &&
+				if (arrayV[i]->y  > 0 && (arrayV[i]->x + 1) != x &&
 					map1[arrayV[i]->x + 1][arrayV[i]->y - 1] == NULL) {
 
 					map1[arrayV[i]->x][arrayV[i]->y] = NULL;
@@ -244,7 +265,7 @@ void map::move(monsters** arrayW, monsters** arrayV, int x, int y,int N) {
 					break;
 				}
 			case 7:
-				if ((arrayV[i]->y + 1) != y && (arrayV[i]->x - 1) > 0 &&
+				if ((arrayV[i]->y + 1) != y && arrayV[i]->x > 0 &&
 					map1[arrayV[i]->x][arrayV[i]->y + 1] == NULL) {
 
 					map1[arrayV[i]->x][arrayV[i]->y] = NULL;
@@ -258,6 +279,96 @@ void map::move(monsters** arrayW, monsters** arrayV, int x, int y,int N) {
 				break;
 			}
 		}
+	}
+}
+
+//Moves avatar
+void map::move_av(avatar player, int x, int y, int num) {
+	int k = ret_coo1(x, y);
+	int l = ret_coo2(x, y);
+
+	// Move the avatar based on the input
+
+	if (num == 0) // Up arrow key
+	{
+		if (k > 0 && map1[k - 1][l] == NULL)
+		{
+			map1[k][l] = NULL;
+			k--;
+			map1[k][l] = &player;
+			return;
+		}
+	}
+	else if (num == 1) // Down arrow key
+	{
+		if (k + 1 < x && map1[k + 1][l] == NULL)
+		{
+			map1[k][l] = NULL;
+			k++;
+			map1[k][l] = &player;
+			return;
+		}
+	}
+	else if (num == 2) // Left arrow key
+	{
+		if (l > 0 && map1[k][l - 1] == NULL)
+		{
+			map1[k][l] = NULL;
+			l--;
+			map1[k][l] = &player;
+			return;
+		}
+	}
+	else if (num == 3) // Right arrow key
+	{
+		if (l + 1 > 0 && map1[k][l + 1] == NULL)
+		{
+			map1[k][l] = NULL;
+			l++;
+			map1[k][l] = &player;
+			return;
+		}
+	}
+	return;
+}
+
+//Prints map
+void map::printmap(int x, int y) {
+	for (int L = 0; L < y; L++) {
+		cout << "__";
+	}
+	cout << endl;
+	for (int i = 0; i < x; i++) {
+		for (int j = 0; j < y; j++) {
+			if (map1[i][j] == NULL) cout << "| ";
+			else {
+				switch (map1[i][j]->get_type()) {
+				case 0:
+					cout << "|A";
+					break;
+				case 1:
+					cout << "|W";
+					break;
+				case 2:
+					cout << "|V";
+					break;
+				case 3:
+					cout << "|S";
+					break;
+				case 4:
+					cout << "|T";
+					break;
+				default:
+					cout << "|O";
+					break;
+				}
+			}
+		}
+		cout << "|";
+		cout << endl;
+	}
+	for (int L = 0; L < y; L++) {
+		cout << "--";
 	}
 }
 
@@ -281,102 +392,6 @@ int map::ret_coo2(int x, int y) {
 			}
 		}
 	}
-}
-
-//Moves avatar
-void map::move_av(avatar player,int x,int y,int num) {
-	int k = ret_coo1(x, y);
-	int l = ret_coo2(x, y);
-
-	// Move the avatar based on the input
-	
-	if (num==0) // Up arrow key
-	{
-		if (k -1 > 0 && map1[k-1][l] == NULL)
-		{
-			map1[k][l] = NULL;
-			k--;
-			map1[k][l] = &player;
-			return;
-		}
-	}
-	else if (num == 1) // Down arrow key
-	{
-		if (k + 1 < x && map1[k+1][l] == NULL)
-		{
-			map1[k][l] = NULL;
-			k++;
-			map1[k][l] = &player;
-			return;
-		}
-	}
-	else if (num == 2) // Left arrow key
-	{
-		if (l -1 > 0 && map1[k][l - 1] == NULL)
-		{
-			map1[k][l] = NULL;
-			l--;
-			map1[k][l] = &player;
-			return;
-		}
-	}
-	else if (num == 3) // Right arrow key
-	{
-		if (l +1 > 0 && map1[k][l + 1] == NULL)
-		{
-			map1[k][l] = NULL;
-			l++;
-			map1[k][l] = &player;
-			return;
-		}
-	}
-	return;
-}
-
-
-//Prints map
-void map::printmap(int x, int y) {
-	int w=0, v=0;
-	for (int L = 0; L < y; L++) {
-		cout << "__";
-	}
-	cout << endl;
-	for (int i = 0; i < x; i++) {
-		for (int j = 0; j< y; j++) {
-			if (map1[i][j] == NULL) cout << "| ";
-			else {
-				switch (map1[i][j]->get_type()) {
-					case 0:
-						cout << "|A";
-						break;
-					case 1:
-						cout << "|W";
-						w++;
-						break;
-					case 2:
-						cout << "|V";
-						v++;
-						break;
-					case 3:
-						cout << "|S";
-						break;
-					case 4:
-						cout << "|T";
-						break;
-					default:
-						cout << "|O";
-						break;
-				}
-			}
-		}
-		cout << "|";
-		cout << endl;	
-	}
-	for (int L = 0; L < y; L++) {
-		cout << "--";
-	}
-	cout << endl<< "ta werewolve einai:" << w << endl;
-	cout << "ta vampire einai:" << v << endl;
 }
 
 //Takes a position on the map that contains an entity type 1 or 2 and gives back the monster
@@ -452,14 +467,18 @@ void map::attack(monsters** arrayW, monsters** arrayV, monsters* attacker1, mons
 				if (attacker2->get_type() == 1) {
 					deadW++;
 					if (deadW == N) {
+						system("cls");
 						cout <<endl<< "VAMPIRES WON!!!";
+						Sleep(5000);
 						exit(0);
 					}
 				}
 				else if(attacker2->get_type() == 2) {
 					deadV++;
 					if (deadV == N) {
+						system("cls");
 						cout << endl << "VAMPIRES WON!!!";
+						Sleep(5000);
 						exit(0);
 					}
 				}
@@ -476,7 +495,7 @@ void map::check_neigh(monsters** arrayW, monsters** arrayV, int x, int y,int N) 
 
 	for (int i = 0; i < N; i++) {
 		if (arrayW[i] != NULL) {
-			if ( (arrayW[i]->x - 1) > 0 &&
+			if (arrayW[i]->x > 0 &&
 				map1[arrayW[i]->x - 1][arrayW[i]->y] != NULL) {
 				switch (map1[arrayW[i]->x-1][arrayW[i]->y]->get_type()) {
 					case 1:
@@ -518,7 +537,7 @@ void map::check_neigh(monsters** arrayW, monsters** arrayV, int x, int y,int N) 
 				}
 				
 			}
-			if ((arrayW[i]->y - 1) > 0 &&
+			if (arrayW[i]->y > 0 &&
 				map1[arrayW[i]->x][arrayW[i]->y - 1] != NULL) {
 				switch (map1[arrayW[i]->x][arrayW[i]->y - 1]->get_type()) {
 				case 1:
@@ -537,14 +556,14 @@ void map::check_neigh(monsters** arrayW, monsters** arrayV, int x, int y,int N) 
 
 	for (int i = 0; i < N; i++) {
 		if (arrayV[i] != NULL) {
-			if ((arrayV[i]->x - 1) > 0 &&
+			if (arrayV[i]->x > 0 &&
 				map1[arrayV[i]->x - 1][arrayV[i]->y] != NULL) {
 				switch (map1[arrayV[i]->x - 1][arrayV[i]->y]->get_type()) {
-				case 2:
-					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x - 1][arrayV[i]->y], N));
-					continue;
 				case 1:
 					attack(arrayW, arrayV, arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x - 1][arrayV[i]->y], N), N);
+					continue;
+				case 2:
+					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x - 1][arrayV[i]->y], N));
 					continue;
 				default:
 					break;
@@ -553,12 +572,12 @@ void map::check_neigh(monsters** arrayW, monsters** arrayV, int x, int y,int N) 
 			}
 			if ((arrayV[i]->y + 1) != y &&
 				map1[arrayV[i]->x][arrayV[i]->y + 1] != NULL) {
-				switch (map1[arrayV[i]->x][arrayV[i]->y + 1]->get_type()) {
-				case 2:
-					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y + 1], N));
-					continue;
+				switch (map1[arrayV[i]->x][arrayV[i]->y + 1]->get_type()) {				
 				case 1:
 					attack(arrayW, arrayV, arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y + 1], N), N);
+					continue;
+				case 2:
+					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y + 1], N));
 					continue;
 				default:
 					break;
@@ -567,26 +586,26 @@ void map::check_neigh(monsters** arrayW, monsters** arrayV, int x, int y,int N) 
 			}
 			if ((arrayV[i]->x + 1) != x &&
 				map1[arrayV[i]->x + 1][arrayV[i]->y] != NULL) {
-				switch (map1[arrayV[i]->x + 1][arrayV[i]->y]->get_type()) {
-				case 2:
-					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x + 1][arrayV[i]->y], N));
-					continue;
+				switch (map1[arrayV[i]->x + 1][arrayV[i]->y]->get_type()) {				
 				case 1:
 					attack(arrayW, arrayV, arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x + 1][arrayV[i]->y], N), N);
+					continue;
+				case 2:
+					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x + 1][arrayV[i]->y], N));
 					continue;
 				default:
 					break;
 				}
 				
 			}
-			if ((arrayV[i]->y - 1) > 0 &&
+			if (arrayV[i]->y > 0 &&
 				map1[arrayV[i]->x][arrayV[i]->y - 1] != NULL) {
-				switch (map1[arrayV[i]->x][arrayV[i]->y - 1]->get_type()) {
-				case 2:
-					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y - 1], N));
-					continue;
+				switch (map1[arrayV[i]->x][arrayV[i]->y - 1]->get_type()) {				
 				case 1:
 					attack(arrayW, arrayV, arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y - 1], N), N);
+					continue;
+				case 2:
+					heal(arrayV[i], ret_monster(arrayW, arrayV, map1[arrayV[i]->x][arrayV[i]->y - 1], N));
 					continue;
 				default:
 					break;
