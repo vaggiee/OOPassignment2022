@@ -66,6 +66,14 @@ int main() {
 		case VK_DOWN:
 			map1->move_av(*mya, x, y, 1);
 			break;
+		case VK_ESCAPE:
+			g = 0;
+			break;
+		case VK_SPACE:
+			cout << endl << "The number of dead werewolves is:"<<map1->get_deadW() << endl;
+			cout << endl << "The number of dead vampires is:" << map1->get_deadV() << endl;
+			system("pause");
+			break;
 		}
 		map1->move(arrayW, arrayV,x,y, N);
 		Sleep(400);
@@ -81,5 +89,6 @@ int main() {
 	delete [] arrayW;
 	delete [] arrayV;
 	map1->deletemap(x);
+	cout << endl<< "Thanks for playing!!!Bye.." << endl;
 	return 0;
 }
