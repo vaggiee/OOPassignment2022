@@ -292,9 +292,7 @@ void map::move_av(avatar player,int x,int y,int num) {
 	
 	if (num==0) // Up arrow key
 	{
-		cout << k<<endl;
-		cout << l << endl;
-		if (k -1 > 0 && map1[k][l] == NULL)
+		if (k -1 > 0 && map1[k-1][l] == NULL)
 		{
 			map1[k][l] = NULL;
 			k--;
