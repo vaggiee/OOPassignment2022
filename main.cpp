@@ -1,3 +1,9 @@
+#include <iostream> 
+#include <ctime>
+#include <cstdlib>
+#include <Windows.h>
+#include "Header.h"
+
 using namespace std;
 
 WORD getKey() {
