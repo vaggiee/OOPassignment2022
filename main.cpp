@@ -5,7 +5,7 @@
 #include "Header.h"
 
 using namespace std;
-
+//Thn getkey thn brhkame sto internet
 WORD getKey() {
 	HANDLE hin = GetStdHandle(STD_INPUT_HANDLE);
 	INPUT_RECORD inrec;
