@@ -498,9 +498,6 @@ void map::attack(monsters** arrayW, monsters** arrayV, monsters* attacker1, mons
 
 		if (attacker1->dmg > attacker2->shield) {
 			attacker2->health -= attacker1->dmg+ attacker2->shield;
-			//for (int l = 0; l < N; l++) {
-			//	if (attacker2->get_type() == 1 && (arrayW[l]->health == attacker2->health)) system("pause");
-			//}
 			if (attacker2->health == 0) {
 				//Count dead Werewolves-Vampires
 				if (attacker2->get_type() == 1) {
@@ -516,7 +513,7 @@ void map::attack(monsters** arrayW, monsters** arrayV, monsters* attacker1, mons
 					deadV++;
 					if (deadV == N) {
 						system("cls");
-						cout << endl << "VAMPIRES WON!!!";
+						cout << endl << "WEREWOLFS WON!!!";
 						Sleep(5000);
 						exit(0);
 					}
