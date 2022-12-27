@@ -123,7 +123,8 @@ int main() {
 			cout << endl << "The number of potions is: " << mya->get_potion() << endl;
 			system("pause");
 			break;
- 			}		map1->check_neigh(arrayW, arrayV, x, y, N);
+ 			}
+		map1->check_neigh(arrayW, arrayV, x, y, N);
 		map1->move(arrayW, arrayV, x, y, N);
 		Sleep(50);
 		if (time == 23) time = 0;
